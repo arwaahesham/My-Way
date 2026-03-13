@@ -11,7 +11,9 @@ function Home() {
       <img
         src="./headerr.jpg"
         alt="header"
-        className="w-full h-[250px] sm:h-[350px] md:h-[500px] lg:h-[100vh] object-contain md:object-cover"
+        className="w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] xl:h-[100vh] 
+                 object-cover md:object-cover
+                 mx-auto max-w-full"
       />
     </motion.div>
   )
