@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 function Contact() {
   return (
     <motion.section
-      id="تواصل معنا" // ← مهم للـ Navbar
+      id="تواصل معنا" 
       className="py-16"
       initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -12,7 +12,6 @@ function Contact() {
     >
       <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row gap-10">
 
-        {/* Left */}
         <div className="flex-1 order-0 md:order-1">
           <h2 className="text-3xl font-bold mb-4">تواصل معنا</h2>
           <p className="mb-4">
@@ -20,7 +19,6 @@ function Contact() {
           </p>
         </div>
 
-        {/* Right */}
         <div className="flex-1 order-1 md:order-2">
           <form className="flex flex-col gap-4">
 

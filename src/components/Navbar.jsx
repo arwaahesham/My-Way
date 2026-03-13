@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion"; // استيراد
+import { motion, AnimatePresence } from "framer-motion"; 
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,7 +9,6 @@ function Navbar() {
   return (
     <nav className="fixed top-0 w-full h-20 bg-[#C4006B] flex justify-between items-center px-8 z-50 shadow-md">
 
-      {/* Logo */}
       <div>
         <img
           src="./logo.png"
@@ -18,7 +17,6 @@ function Navbar() {
         />
       </div>
 
-      {/* Desktop Links */}
       <ul className="hidden md:flex gap-8 text-white text-lg">
         {links.map((link) => (
           <li key={link} className="relative group">
@@ -30,8 +28,7 @@ function Navbar() {
         ))}
       </ul>
 
-      {/* Hamburger */}
-      <div className="md:hidden text-white">
+\      <div className="md:hidden text-white">
         {isOpen ? (
           <X size={28} onClick={() => setIsOpen(false)} className="cursor-pointer" />
         ) : (
@@ -39,7 +36,6 @@ function Navbar() {
         )}
       </div>
 
-      {/* Mobile Menu with Framer Motion */}
       <AnimatePresence>
         {isOpen && (
           <motion.div

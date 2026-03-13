@@ -12,7 +12,6 @@ function About() {
     >
       <div className="max-w-6xl w-full mx-auto px-8 py-20">
 
-        {/* Title */}
         <div className="text-center mb-10">
           <h2 className="text-4xl font-bold">
             عن ماي واي
@@ -23,7 +22,6 @@ function About() {
           </div>
         </div>
 
-        {/* Content */}
         <div className="text-center leading-8 text-lg">
 
           <p>

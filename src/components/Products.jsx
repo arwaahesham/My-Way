@@ -6,7 +6,6 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 
-// الصور للمنتجات الأساسية
 const images = [
   "/images/img1.jpg",
   "/images/img2.jpg",
@@ -23,7 +22,6 @@ const images = [
   "/images/img13.jpg"
 ];
 
-// صور قسم المخبوزات
 const bakeryImages = [
   "/images/bakery1.jpg",
   "/images/bakery2.jpg",
@@ -51,7 +49,6 @@ const Products = () => {
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
     >
-      {/* قسم المنتجات الأساسي */}
       <h2 className="text-center text-3xl font-bold mb-4">
         نبذه عن منتجات ماي واي
       </h2>
@@ -62,7 +59,6 @@ const Products = () => {
 
       <SwiperSection images={images} setActiveImage={setActiveImage} />
 
-      {/* قسم المخبوزات */}
       <h2 className="text-center text-3xl font-bold mt-20 mb-4">
         قسم المخبوزات
       </h2>
@@ -73,7 +69,6 @@ const Products = () => {
 
       <SwiperSection images={bakeryImages} setActiveImage={setActiveImage} />
 
-      {/* Modal */}
       <AnimatePresence>
         {activeImage && (
           <motion.div
@@ -110,7 +105,6 @@ const Products = () => {
   );
 };
 
-// Component منفصل لإعادة استخدام Swiper
 const SwiperSection = ({ images, setActiveImage }) => (
   <Swiper
     modules={[Navigation]}
