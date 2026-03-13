@@ -28,7 +28,7 @@ function Navbar() {
         ))}
       </ul>
 
-\      <div className="md:hidden text-white">
+    <div className="md:hidden text-white">
         {isOpen ? (
           <X size={28} onClick={() => setIsOpen(false)} className="cursor-pointer" />
         ) : (
