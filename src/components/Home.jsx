@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 function Home() {
   return (
     <motion.div
+      id="الرئيسية"
       className="hero-section w-full overflow-hidden pt-20" 
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
