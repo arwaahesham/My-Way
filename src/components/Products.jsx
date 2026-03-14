@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { Navigation, Autoplay } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -49,25 +49,34 @@ const Products = () => {
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
     >
+      {/* عنوان المنتجات */}
       <h2 className="text-center text-3xl font-bold mb-4">
         نبذه عن منتجات ماي واي
       </h2>
+
       <p className="text-center text-lg mb-2">
         ماي واي لديها اكثر من 950 منتج
       </p>
+
       <div className="w-20 h-1 mx-auto bg-[#C4006B] rounded-full mb-10"></div>
 
       <SwiperSection images={images} setActiveImage={setActiveImage} />
 
+      {/* قسم المخبوزات */}
+
       <h2 className="text-center text-3xl font-bold mt-20 mb-4">
         قسم المخبوزات
       </h2>
+
       <p className="text-center text-lg mb-2">
         تشكيلة لذيذة من المخبوزات
       </p>
+
       <div className="w-20 h-1 mx-auto bg-[#C4006B] rounded-full mb-10"></div>
 
       <SwiperSection images={bakeryImages} setActiveImage={setActiveImage} />
+
+      {/* Modal لعرض الصورة مكبرة */}
 
       <AnimatePresence>
         {activeImage && (
@@ -92,7 +101,7 @@ const Products = () => {
               />
 
               <button
-                className="absolute top-4 right-4 text-black rounded-full"
+                className="absolute top-4 right-4 text-black text-xl"
                 onClick={() => setActiveImage(null)}
               >
                 ✕
@@ -101,14 +110,19 @@ const Products = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
     </motion.section>
   );
 };
 
 const SwiperSection = ({ images, setActiveImage }) => (
   <Swiper
-    modules={[Navigation]}
+    modules={[Navigation, Autoplay]}
     navigation
+    autoplay={{
+      delay: 3000,
+      disableOnInteraction: false,
+    }}
     centeredSlides={true}
     slidesPerView={3}
     spaceBetween={30}
@@ -118,12 +132,12 @@ const SwiperSection = ({ images, setActiveImage }) => (
     breakpoints={{
       0: {
         slidesPerView: 1.3,
-        navigation: false
+        navigation: false,
       },
       768: {
         slidesPerView: 3,
-        navigation: true
-      }
+        navigation: true,
+      },
     }}
   >
     {images.map((img, index) => (
@@ -134,10 +148,11 @@ const SwiperSection = ({ images, setActiveImage }) => (
             alt=""
             onClick={() => setActiveImage(img)}
             className={`w-full h-[400px] object-cover rounded-2xl cursor-pointer transition-all duration-500
-              ${isActive
+            ${
+              isActive
                 ? "scale-100 opacity-100 z-10"
                 : "scale-90 opacity-60"
-              }`}
+            }`}
           />
         )}
       </SwiperSlide>
