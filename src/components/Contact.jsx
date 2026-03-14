@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import emailjs from "@emailjs/browser";
 
@@ -7,26 +7,33 @@ function Contact() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [formValid, setFormValid] = useState(false);
+  const [phoneValid, setPhoneValid] = useState(false);
 
   const handleChange = () => {
-    const isValid =
-      form.current.user_name.value.trim() !== "" &&
-      form.current.user_phone.value.trim() !== "" &&
-      form.current.user_city.value.trim() !== "" &&
-      form.current.message.value.trim() !== "";
-    setFormValid(isValid);
+    const name = form.current.user_name.value.trim() !== "";
+    const phone = phoneValid;
+    const city = form.current.user_city.value.trim() !== "";
+    const message = form.current.message.value.trim() !== "";
+    setFormValid(name && phone && city && message);
+  };
+
+  const handlePhoneChange = (e) => {
+    const value = e.target.value.replace(/\D/g, ""); 
+    e.target.value = value;
+    setPhoneValid(value.length === 11);
+    handleChange();
   };
 
   const sendEmail = (e) => {
     e.preventDefault();
-    if (!formValid) return; 
+    if (!formValid) return;
 
     setLoading(true);
     setSuccess(false);
 
     emailjs
       .sendForm(
-       "service_yix7yj9",
+        "service_yix7yj9",
         "template_xnfu81e",
         form.current,
         "IVjACImzdWKMPpbyw"
@@ -38,7 +45,7 @@ function Contact() {
           setSuccess(true);
           form.current.reset();
           setFormValid(false);
-          setTimeout(() => setSuccess(false), 3000);
+          setPhoneValid(false);
         },
         (error) => {
           console.log(error.text);
@@ -69,28 +76,32 @@ function Contact() {
           <form
             ref={form}
             onSubmit={sendEmail}
-            onChange={handleChange}
             className="flex flex-col gap-4"
           >
             <input
               type="text"
               name="user_name"
-              placeholder="الاسم"
+              placeholder="الاسم ثلاثي"
               className="p-3 border rounded"
               required
+              onChange={handleChange}
             />
+
             <input
-              type="number"
+              type="text"
               name="user_phone"
               placeholder="رقم التليفون"
               className="p-3 border rounded"
               required
+              onChange={handlePhoneChange}
             />
+
             <select
               name="user_city"
               className="p-3 border rounded"
               required
               defaultValue=""
+              onChange={handleChange}
             >
               <option value="" disabled hidden>
                 اختر المحافظة
@@ -121,18 +132,20 @@ function Contact() {
               <option>المنوفية</option>
               <option>المحلة</option>
             </select>
+
             <textarea
               name="message"
               placeholder="اكتب رسالتك"
               className="p-3 border rounded"
               required
+              onChange={handleChange}
             ></textarea>
 
             <button
               type="submit"
-              disabled={loading || !formValid}
+              disabled={!formValid || loading}
               className={`bg-[#C4006B] text-white p-3 rounded hover:bg-[#A8005A] flex items-center justify-center gap-2 ${
-                loading || !formValid ? "opacity-70 cursor-not-allowed" : ""
+                !formValid || loading ? "opacity-70 cursor-not-allowed" : ""
               }`}
             >
               {loading ? (
@@ -167,14 +180,22 @@ function Contact() {
         </div>
       </div>
 
-{success && (
-  <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
-    <div className="bg-[#C4006B] text-white px-10 py-6 rounded-2xl shadow-2xl text-center text-2xl font-bold animate-fadeIn">
-      تم الإرسال بنجاح وهيتم التواصل معاكي ف اقرب وقت
-    </div>
-  </div>
-)}
+      {success && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-auto">
+          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
 
+          <div className="bg-[#C4006B] text-white px-10 py-8 rounded-2xl shadow-2xl text-center text-2xl font-bold relative z-10 flex flex-col items-center gap-6 max-w-md">
+            <div>تم الإرسال بنجاح وهيتم التواصل معاكي ف اقرب وقت</div>
+
+            <button
+              onClick={() => setSuccess(false)}
+              className="bg-gray-100 text-black font-bold px-6 py-2 rounded-lg hover:bg-gray-100 transition"
+            >
+              حسناً
+            </button>
+          </div>
+        </div>
+      )}
     </motion.section>
   );
 }
