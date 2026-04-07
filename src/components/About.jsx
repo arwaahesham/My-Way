@@ -13,9 +13,9 @@ function About() {
       <div className="max-w-6xl w-full mx-auto px-8 py-20">
 
         <div className="text-center mb-10">
-          <h2 className="text-4xl font-bold">
-            عن ماي واي
-          </h2>
+          <h1 className="text-4xl font-bold">
+             ماي واي
+          </h1>
 
           <div className="flex justify-center gap-4 mt-4">
             <div className="w-20 h-1 rounded-full bg-[#C4006B]"></div>
