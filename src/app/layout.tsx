@@ -10,7 +10,7 @@ const tajawal = Tajawal({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'www.myway-egypt.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl), // Ensure this is your production URL
@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   description: "اكتشفي منتجات ماي واي الأصلية في مصر. عروض حصرية على مستحضرات التجميل، العناية بالبشرة والشعر، العطور، والمنظفات. انضمي إلى فريق ماي واي لتحقيق النجاح المالي.",
   keywords: ["My way", "MyWay", "My way egypt", "ماي واي", "منتجات ماي واي", "ماي واي مصر", "عروض ماي واي", "كتالوج ماي واي", "عضوية ماي واي", "مستحضرات تجميل ماي واي", "عناية بالبشرة ماي واي", "عطور ماي واي", "فرصة عمل ماي واي", "بيع مباشر ماي واي", "منتجات طبيعية ماي واي"],
   openGraph: {
+   
     title: "MyWay - ماي واي مصر | منتجات تجميل وعناية وفرص عمل",
     description: "اكتشفي منتجات ماي واي الأصلية في مصر. عروض حصرية على مستحضرات التجميل، العناية بالبشرة والشعر، العطور، والمنظفات. انضمي إلى فريق ماي واي لتحقيق النجاح المالي.",
     url: siteUrl,
@@ -31,6 +32,9 @@ export const metadata: Metadata = {
     ],
     locale: 'ar_EG',
     type: 'website',
+  },
+  verification: {
+    google: 'iii6aIOsXsLot2QPJybSEt_QEbcBs7ybWOFDgsFOm9Y',
   },
 };
 
