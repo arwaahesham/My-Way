@@ -1,6 +1,9 @@
+'use client';
+
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
+import Image from "next/image";
 import { Navigation, Autoplay } from "swiper/modules";
 
 import "swiper/css";
@@ -37,71 +40,58 @@ const bakeryImages = [
   "/images/bakery12.jpg",
 ];
 
-const Products = () => {
+export default function Products() {
   const [activeImage, setActiveImage] = useState(null);
 
   return (
-    <motion.section
-      id="منتجاتنا"
-      className="py-20 flex flex-col items-center justify-center"
-      initial={{ opacity: 0, y: 60 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-    >
-      {/* عنوان المنتجات */}
+    <section className="py-20 px-4">
+
       <h2 className="text-center text-3xl font-bold mb-4">
         نبذه عن منتجات ماي واي
       </h2>
 
-      <p className="text-center text-lg mb-2">
+      <p className="text-center text-lg mb-10">
         ماي واي لديها اكثر من 950 منتج
       </p>
 
-      <div className="w-20 h-1 mx-auto bg-[#C4006B] rounded-full mb-10"></div>
-
       <SwiperSection images={images} setActiveImage={setActiveImage} />
-
-      {/* قسم المخبوزات */}
 
       <h2 className="text-center text-3xl font-bold mt-20 mb-4">
         قسم المخبوزات
       </h2>
 
-      <p className="text-center text-lg mb-2">
+      <p className="text-center text-lg mb-10">
         تشكيلة لذيذة من المخبوزات
       </p>
 
-      <div className="w-20 h-1 mx-auto bg-[#C4006B] rounded-full mb-10"></div>
-
       <SwiperSection images={bakeryImages} setActiveImage={setActiveImage} />
 
-      {/* Modal لعرض الصورة مكبرة */}
-
+      {/* Modal */}
       <AnimatePresence>
         {activeImage && (
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+            onClick={() => setActiveImage(null)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setActiveImage(null)}
           >
             <motion.div
-              className="relative bg-white rounded-xl max-w-2xl w-full mx-4"
+              className="relative w-[90%] max-w-4xl h-[80vh]"
+              onClick={(e) => e.stopPropagation()}
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}
-              onClick={(e) => e.stopPropagation()}
             >
-              <img
+              <Image
                 src={activeImage}
-                alt=""
-                className="w-full max-h-[700px] object-cover rounded-lg"
+                alt="preview"
+                fill
+                className="object-contain rounded-xl"
               />
 
               <button
-                className="absolute top-4 right-4 text-black text-xl"
+                className="absolute top-4 right-4 text-white text-2xl"
                 onClick={() => setActiveImage(null)}
               >
                 ✕
@@ -111,53 +101,56 @@ const Products = () => {
         )}
       </AnimatePresence>
 
-    </motion.section>
+    </section>
+  );
+}
+
+const SwiperSection = ({ images, setActiveImage }) => {
+  const MotionImage = motion(Image);
+
+  return (
+    <Swiper
+      modules={[Navigation, Autoplay]}
+      autoplay={{
+        delay: 3000,
+        disableOnInteraction: false,
+      }}
+      centeredSlides
+      loop
+      spaceBetween={20}
+      className="w-full max-w-[1200px] mx-auto"
+
+      breakpoints={{
+        0: {
+          slidesPerView: 1.2,
+        },
+        640: {
+          slidesPerView: 2,
+        },
+        1024: {
+          slidesPerView: 3,
+        },
+      }}
+
+      // 🔥 keep simple
+    >
+      {images.map((img, index) => (
+        <SwiperSlide key={index}>
+          {({ isActive }) => (
+            <div className="relative w-full h-[350px] sm:h-[350px] lg:h-[400px]">
+              <MotionImage
+                src={img}
+                alt={`منتج ${index + 1}`}
+                fill
+                sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 33vw"
+                onClick={() => setActiveImage(img)}
+                className={`object-cover rounded-2xl cursor-pointer transition-all duration-500
+                ${isActive ? "scale-100 opacity-100" : "scale-90 opacity-60"}`}
+              />
+            </div>
+          )}
+        </SwiperSlide>
+      ))}
+    </Swiper>
   );
 };
-
-const SwiperSection = ({ images, setActiveImage }) => (
-  <Swiper
-    modules={[Navigation, Autoplay]}
-    navigation
-    autoplay={{
-      delay: 3000,
-      disableOnInteraction: false,
-    }}
-    centeredSlides={true}
-    slidesPerView={3}
-    spaceBetween={30}
-    loop={true}
-    initialSlide={Math.floor(images.length / 2)}
-    className="products-swiper w-full max-w-[1200px]"
-    breakpoints={{
-      0: {
-        slidesPerView: 1.3,
-        navigation: false,
-      },
-      768: {
-        slidesPerView: 3,
-        navigation: true,
-      },
-    }}
-  >
-    {images.map((img, index) => (
-      <SwiperSlide key={index}>
-        {({ isActive }) => (
-          <motion.img
-            src={img}
-            alt=""
-            onClick={() => setActiveImage(img)}
-            className={`w-full h-[400px] object-cover rounded-2xl cursor-pointer transition-all duration-500
-            ${
-              isActive
-                ? "scale-100 opacity-100 z-10"
-                : "scale-90 opacity-60"
-            }`}
-          />
-        )}
-      </SwiperSlide>
-    ))}
-  </Swiper>
-);
-
-export default Products;

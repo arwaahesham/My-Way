@@ -1,21 +1,20 @@
+'use client'
 import { motion } from "framer-motion";
 
 function About() {
   return (
     <motion.section
-      id="من نحن"
-      className="py-16 flex justify-center "
+      id="about"
+      className="py-20 w-full max-w-6xl mx-auto px-8"
       initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
       viewport={{ once: true, amount: 0.2 }}
     >
-      <div className="max-w-6xl w-full mx-auto px-8 py-20">
-
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold">
+          <h2 className="text-4xl font-bold">
              ماي واي
-          </h1>
+          </h2>
 
           <div className="flex justify-center gap-4 mt-4">
             <div className="w-20 h-1 rounded-full bg-[#C4006B]"></div>
@@ -48,7 +47,6 @@ function About() {
 
         </div>
 
-      </div>
     </motion.section>
   );
 }
