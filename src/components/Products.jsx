@@ -44,7 +44,7 @@ export default function Products() {
   const [activeImage, setActiveImage] = useState(null);
 
   return (
-    <section className="py-20 px-4">
+    <section id="products" className="py-20 px-4">
 
       <h2 className="text-center text-3xl font-bold mb-4">
         نبذه عن منتجات ماي واي
