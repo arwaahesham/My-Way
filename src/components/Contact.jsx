@@ -1,63 +1,75 @@
 'use client'
+
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import emailjs from "@emailjs/browser";
 
 function Contact() {
-  const form = useRef();
+  const form = useRef(null);
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const [formValid, setFormValid] = useState(false);
 
+  // ✅ FIXED: safe validation using FormData
   const handleChange = () => {
-    const name = form.current.user_name.value.trim() !== "";
-    const phone = form.current.user_phone.value.replace(/\D/g, "").length === 11;
-    const city = form.current.user_city.value.trim() !== "";
-    const message = form.current.message.value.trim() !== "";
-    setFormValid(name && phone && city && message);
+    const data = new FormData(form.current);
+
+    const name = (data.get("user_name") || "").trim() !== "";
+    const phone = (data.get("user_phone") || "").replace(/\D/g, "").length === 11;
+    const id = (data.get("user_id") || "").replace(/\D/g, "").length === 14;
+    const city = (data.get("user_city") || "").trim() !== "";
+    const message = (data.get("message") || "").trim() !== "";
+
+    setFormValid(name && phone && id && city && message);
   };
 
+  // ✅ FIXED phone input
   const handlePhoneChange = (e) => {
-    const value = e.target.value.replace(/\D/g, "");
-    e.target.value = value;
+    e.target.value = e.target.value.replace(/\D/g, "");
     handleChange();
   };
 
-  const sendEmail = (e) => {
+  // 🔥 FIXED: safer EmailJS call (no sendForm issues in Next.js)
+  const sendEmail = async (e) => {
     e.preventDefault();
     setError(null);
+
     if (!formValid) return;
 
-    setLoading(true);
-    setSuccess(false);
+    try {
+      setLoading(true);
 
-    // It's best practice to store these IDs in environment variables
-    // Create a .env.local file in your root directory and add:
-    // NEXT_PUBLIC_EMAILJS_SERVICE_ID=your_service_id
-    // NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=your_template_id
-    // NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_public_key
-    emailjs
-      .sendForm(
+      const data = new FormData(form.current);
+
+      const templateParams = {
+        user_name: data.get("user_name"),
+        user_phone: data.get("user_phone"),
+        user_id: data.get("user_id"),
+        user_city: data.get("user_city"),
+        message: data.get("message"),
+      };
+
+      const result = await emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "service_yix7yj9",
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "template_xnfu81e",
-        form.current,
+        templateParams,
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "IVjACImzdWKMPpbyw"
-      )
-      .then(
-        (result) => {
-          console.log(result.text);
-          setLoading(false);
-          setSuccess(true);
-          form.current.reset();
-          setFormValid(false);
-        },
-        (error) => {
-          console.log(error.text);
-          setLoading(false);
-          setError("حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.");
-        }
       );
+
+      console.log("SUCCESS:", result.text);
+
+      setSuccess(true);
+      form.current.reset();
+      setFormValid(false);
+
+    } catch (err) {
+      console.log("ERROR:", err);
+      setError(err?.text || "حدث خطأ أثناء الإرسال");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -66,66 +78,65 @@ function Contact() {
       className="py-16 relative w-full"
       initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      transition={{ duration: 0.6 }}
       viewport={{ once: true, amount: 0.2 }}
     >
       <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row gap-10">
-        <div className="flex-1 order-0 md:order-1">
+
+        <div className="flex-1">
           <h2 className="text-3xl font-bold mb-4">تواصل معنا</h2>
-          <p className="mb-4">
-            لو حابه تعملي معانا عضويه وتعرفي اكتر عن ماي واي خلينا نتواصل معاكي
-          </p>
+          <p>لو حابه تعملي معانا عضويه وتعرفي اكتر عن ماي واي خلينا نتواصل معاكي</p>
         </div>
 
-        <div className="flex-1 order-1 md:order-2">
+        <div className="flex-1">
+
           {success ? (
-            <div className="bg-green-100 border-r-4 border-green-500 text-green-800 p-6 rounded-lg flex flex-col items-center justify-center h-full text-center shadow-md dark:bg-green-900/30 dark:text-green-300">
-              <h3 className="font-bold text-2xl">تم الإرسال بنجاح!</h3>
-              <p className="mt-3 text-lg">شكراً لتواصلك معنا. سيتم التواصل معك في أقرب وقت ممكن.</p>
-            </div>
+         <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-lg flex flex-col items-center justify-center h-full text-center shadow-md bg-transparent">
+          <h3 className="font-bold text-2xl text-[#C4006B]">
+          تم الإرسال بنجاح!
+          </h3>                
+          <p className="mt-3 text-lg text-zinc-700 dark:text-zinc-300">
+      شكراً لتواصلك معنا. سيتم التواصل معك في أقرب وقت ممكن.
+          </p>            
+    </div>
           ) : (
-            <form
-              ref={form}
-              onSubmit={sendEmail}
-              className="flex flex-col gap-4"
-            >
-              <label htmlFor="user_name" className="sr-only">الاسم ثلاثي</label>
+            <form ref={form} onSubmit={sendEmail} className="flex flex-col gap-4">
+
               <input
-                id="user_name"
-                type="text"
                 name="user_name"
-                placeholder="الاسم ثلاثي"
-                className="p-3 border rounded bg-transparent border-zinc-300 dark:border-zinc-600 focus:ring-2 focus:ring-[#C4006B] focus:outline-none transition-shadow"
-                required
+                placeholder="الاسم"
                 onChange={handleChange}
+                className="p-3 border rounded"
+                required
               />
 
-              <label htmlFor="user_phone" className="sr-only">رقم التليفون</label>
               <input
-                id="user_phone"
-                type="text"
                 name="user_phone"
                 placeholder="رقم التليفون"
-                className="p-3 border rounded bg-transparent border-zinc-300 dark:border-zinc-600 focus:ring-2 focus:ring-[#C4006B] focus:outline-none transition-shadow"
-                required
                 onChange={handlePhoneChange}
+                className="p-3 border rounded"
+                required
               />
 
-              <label htmlFor="user_city" className="sr-only">المحافظة</label>
-              <select
-                id="user_city"
-                name="user_city"
-                className="p-3 border rounded bg-transparent border-zinc-300 dark:border-zinc-600 focus:ring-2 focus:ring-[#C4006B] focus:outline-none transition-shadow"
-                required
-                defaultValue=""
+              <input
+                name="user_id"
+                placeholder="الرقم القومي"
                 onChange={handleChange}
+                className="p-3 border rounded"
+                required
+              />
+
+              <select
+                name="user_city"
+                onChange={handleChange}
+                className="p-3 border rounded"
+                defaultValue=""
+                required
               >
-                <option value="" disabled hidden>
-                  اختر المحافظة
-                </option>
+                <option value="" disabled>اختر المحافظة</option>
                 <option value="القاهرة">القاهرة</option>
-                <option value="الجيزة">الجيزة</option>
                 <option value="الإسكندرية">الإسكندرية</option>
+                <option value="الجيزة">الجيزة</option>
                 <option value="أسيوط">أسيوط</option>
                 <option value="اسماعيليه">اسماعيليه</option>
                 <option value="مرسى مطروح">مرسى مطروح</option>
@@ -150,56 +161,27 @@ function Contact() {
                 <option value="المحلة">المحلة</option>
               </select>
 
-              <label htmlFor="message" className="sr-only">رسالتك</label>
               <textarea
-                id="message"
                 name="message"
-                placeholder="اكتب رسالتك"
-                className="p-3 border rounded bg-transparent border-zinc-300 dark:border-zinc-600 focus:ring-2 focus:ring-[#C4006B] focus:outline-none transition-shadow"
-                required
+                placeholder="الرسالة"
                 onChange={handleChange}
-              ></textarea>
+                className="p-3 border rounded"
+                required
+              />
 
               <button
                 type="submit"
                 disabled={!formValid || loading}
-                className="bg-[#C4006B] text-white p-3 rounded hover:bg-[#A8005A] transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="bg-pink-600 text-white p-3 rounded disabled:opacity-50"
               >
-                {loading ? (
-                  <>
-                    <svg
-                      className="animate-spin h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v8z"
-                      ></path>
-                    </svg>
-                    جاري الارسال...
-                  </>
-                ) : (
-                  "ارسال"
-                )}
+                {loading ? "جاري الإرسال..." : "إرسال"}
               </button>
-              {error && (
-                <p className="text-red-500 text-center mt-2">
-                  {error}
-                </p>
-              )}
+
+              {error && <p className="text-red-500">{error}</p>}
+
             </form>
           )}
+
         </div>
       </div>
     </motion.section>
