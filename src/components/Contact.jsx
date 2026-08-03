@@ -59,6 +59,12 @@ function Contact() {
       );
 
       console.log("SUCCESS:", result.text);
+      window.dataLayer = window.dataLayer || [];
+
+window.dataLayer.push({
+  event: "form_submit",
+  form_name: "contact_form",
+});
 
       setSuccess(true);
       form.current.reset();
